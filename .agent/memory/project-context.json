@@ -1,0 +1,82 @@
+{
+  "$schema": "./schema.json",
+  "version": "1.0.0",
+  "entity_id": "program-agent-hello-world",
+  "entity_type": "project",
+  "summary": "人与Agent共存示范项目。极简架构：根目录只有README.md + cli + config/ + AGENTS.md。Agent完整世界在.agent/（隐藏）。CLI实时解析.agent/源数据。src/docs/tests按需创建不预设。重要区分：本项目是Agent的工作空间，不是Agent本身。Agent是外部环境（Kimi CLI、Claude Code等）。",
+  "key_facts": [
+    "项目根目录是人类的家，极度简洁：README.md + cli + config/ + AGENTS.md",
+    "Agent的完整世界在.agent/（隐藏），包含规范、记忆、计划、工具、CLI源码",
+    "CLI实时解析.agent/源数据，无需同步产物目录，每次运行都是最新状态",
+    "人类交互入口是./cli（Bun+TypeScript构建），源码在.agent/cli-src/",
+    "重要区分：本项目是Agent的工作空间，Agent是外部环境（Kimi CLI、Claude Code等）",
+    "CLI不是Agent，是人类的状态查看器，帮助人类与外部Agent协作",
+    "./cli context 生成项目上下文，方便人类复制粘贴给外部Agent",
+    "src/ docs/ tests/ 不预设，按需创建",
+    "config/是人类的专属配置区，初始为空",
+    "Agent记忆使用结构化JSON，存储于 .agent/memory/",
+    "螺丝计划使用Markdown+Frontmatter，存储于 .agent/plans/",
+    "CLI可扩展：用户提需求，Agent在.agent/cli-src/实现新子命令"
+  ],
+  "preferences": {
+    "primary_language": "zh",
+    "code_language": "zh-en-mixed",
+    "doc_style": "structured_markdown",
+    "coding_style": "strict_types_pep8",
+    "commit_style": "conventional_commits",
+    "sync_frequency": "realtime",
+    "human_communication": "concise_3_points_max",
+    "plan_format": "markdown_frontmatter",
+    "human_view_mode": "cli_realtime",
+    "agent_spaces_hidden": true,
+    "preset_dirs": false,
+    "project_role": "agent_workspace",
+    "agent_location": "external"
+  },
+  "open_actions": [
+    "搭建极简项目架构（工作空间而非Agent）",
+    "创建Bun+TypeScript CLI（实时解析，context命令）",
+    "明确文档：本项目是Agent的工作空间，Agent是外部环境",
+    "完善项目文档和渐进式README"
+  ],
+  "recent_decisions": [
+    {
+      "date": "2026-05-04",
+      "topic": "项目定位：工作空间 vs Agent",
+      "decision": "本项目是Agent的工作空间，不是Agent本身。Agent是外部环境（Kimi CLI、Claude Code等）",
+      "rationale": "避免重复造轮子，保持项目极简。Agent工具已经成熟，项目只需提供规范化的工作空间。",
+      "confirmed_by": "human"
+    },
+    {
+      "date": "2026-05-04",
+      "topic": "CLI context命令",
+      "decision": "增加./cli context命令，生成项目上下文摘要，方便人类复制粘贴给外部Agent",
+      "rationale": "人类需要快速把项目状态传递给Agent，context命令生成格式化的摘要文本",
+      "confirmed_by": "agent"
+    },
+    {
+      "date": "2026-05-04",
+      "topic": "删除.human/产物目录",
+      "decision": "CLI实时解析.agent/源数据，无需.human/产物目录",
+      "rationale": "减少概念负担，消除同步依赖",
+      "confirmed_by": "human"
+    }
+  ],
+  "metrics": {
+    "total_plans": 1,
+    "active_plans": 1,
+    "completed_plans": 0,
+    "total_decisions": 3,
+    "last_sync": "2026-05-04T16:20:00+08:00"
+  },
+  "session_history": [
+    {
+      "date": "2026-05-04",
+      "type": "init",
+      "summary": "项目初始化会话。完成工作空间定位、极简架构设计、实时CLI实现、context命令。",
+      "outcomes": ["明确项目定位（工作空间而非Agent）", "完成极简架构设计", "实现实时解析CLI", "增加context命令"]
+    }
+  ],
+  "last_updated": "2026-05-04T16:20:00+08:00",
+  "updated_by": "agent"
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@hac/cli",
+  "version": "0.1.0",
+  "description": "Human-Agent Coexistence CLI — 人类专属命令行工具",
+  "bin": {
+    "hac": "./dist/hac"
+  },
+  "scripts": {
+    "dev": "bun run src/index.ts",
+    "build": "bun build --compile src/index.ts --outfile dist/cli",
+    "install-cli": "bun run build && bun link"
+  },
+  "dependencies": {
+    "picocolors": "^1.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "@types/bun": "latest"
+  },
+  "engines": {
+    "bun": ">=1.0.0"
+  }
+}

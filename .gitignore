@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Build outputs (dist/cli is platform-specific binary, don't commit)
+.agent/cli-src/dist/
+
+# Lock files
+*.lockb
+package-lock.json
+yarn.lock
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Environment
+.env
+.env.local
