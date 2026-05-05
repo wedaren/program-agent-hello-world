@@ -193,11 +193,12 @@ function startChrome(flags: { headless?: boolean; background?: boolean } = {}): 
   console.log('');
 
   if (isBackground) {
-    // macOS: 使用 open -gj 启动 Chrome，不激活、不显示窗口
+    // macOS: 使用 open -gnj 启动 Chrome，不激活、不显示窗口
     // -g: 不将应用带到前台
+    // -n: 即使已在运行也创建新实例（否则 open 会复用普通 Chrome，导致 remote debugging 不生效）
     // -j: 隐藏应用
     const open = spawn('open', [
-      '-gj',
+      '-gnj',
       '-a', 'Google Chrome',
       '--args',
       ...args,
