@@ -127,7 +127,7 @@ function isChromeRunning(port: number): boolean {
   }
 }
 
-function startChrome(): void {
+function startChrome(flags: { headless?: boolean; background?: boolean } = {}): void {
   const cfg = loadConfig();
   const port = cfg.chrome.remote_debugging_port;
   const dataDir = resolveDataDir(cfg);
@@ -139,6 +139,9 @@ function startChrome(): void {
   }
 
   checkMcpConfig(port);
+
+  const isHeadless = flags.headless || cfg.chrome.headless;
+  const isBackground = flags.background && !isHeadless;
 
   const args: string[] = [
     `--remote-debugging-port=${port}`,
@@ -156,8 +159,14 @@ function startChrome(): void {
     console.log(pc.cyan('🚀 启动 Chrome（持久化模式）...'));
   }
 
-  if (cfg.chrome.headless) {
+  if (isHeadless) {
     args.push('--headless=new');
+    console.log(pc.dim('   模式: 无头（完全后台运行）'));
+  } else if (isBackground) {
+    args.push('--window-position=99999,99999');
+    console.log(pc.dim('   模式: 后台（窗口在屏幕外，不打扰）'));
+  } else {
+    console.log(pc.dim('   模式: 前台（正常窗口）'));
   }
 
   // 视口大小通过 window-size 设置
@@ -244,9 +253,12 @@ export function run(args: string[]): void {
   const subcommand = args[0] || 'status';
 
   switch (subcommand) {
-    case 'start':
-      startChrome();
+    case 'start': {
+      const headless = args.includes('--headless');
+      const background = args.includes('--background');
+      startChrome({ headless, background });
       break;
+    }
     case 'stop':
       stopChrome();
       break;
@@ -255,9 +267,11 @@ export function run(args: string[]): void {
       break;
     default:
       console.error(pc.red(`❌ 未知命令: chrome ${subcommand}`));
-      console.log(pc.dim('   ./cli chrome start   — 启动'));
-      console.log(pc.dim('   ./cli chrome stop    — 停止'));
-      console.log(pc.dim('   ./cli chrome status  — 检查状态'));
+      console.log(pc.dim('   ./cli chrome start              — 前台启动'));
+      console.log(pc.dim('   ./cli chrome start --headless   — 无头模式（完全后台）'));
+      console.log(pc.dim('   ./cli chrome start --background — 后台模式（不抢占焦点）'));
+      console.log(pc.dim('   ./cli chrome stop               — 停止'));
+      console.log(pc.dim('   ./cli chrome status             — 检查状态'));
       process.exit(1);
   }
 }

@@ -40,6 +40,8 @@ function main(): void {
     // 二级命令补全
     if (parent === 'chrome') {
       console.log('start stop status');
+    } else if (parent === 'chrome start') {
+      console.log('--headless --background');
     } else if (parent === 'watch') {
       console.log('--interval');
     } else {

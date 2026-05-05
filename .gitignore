@@ -4,7 +4,8 @@ node_modules/
 
 # Build outputs (dist/cli is platform-specific binary, don't commit)
 .agent/cli-src/dist/
-cli  # Compiled binary, build locally with ./agent/cli-src/bun run build
+# Compiled binary, build locally with ./agent/cli-src/bun run build
+cli
 
 # Chrome profile (contains cookies, login sessions)
 .agent/chrome-profile/
