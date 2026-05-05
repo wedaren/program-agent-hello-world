@@ -5,7 +5,7 @@
   "entity_type": "project",
   "summary": "人与Agent共存示范项目。极简架构：根目录只有README.md + cli + config/ + AGENTS.md。Agent完整世界在.agent/（隐藏）。CLI实时解析.agent/源数据。src/docs/tests按需创建不预设。重要区分：本项目是Agent的工作空间，不是Agent本身。Agent是外部环境（Kimi CLI、Claude Code等）。",
   "key_facts": [
-    "项目根目录是人类的家，极度简洁：README.md + cli + config/ + AGENTS.md",
+    "项目根目录 = 本仓库根目录（人类可见区），极度简洁：README.md + cli + config/ + AGENTS.md",
     "Agent的完整世界在.agent/（隐藏），包含规范、记忆、计划、工具、CLI源码",
     "CLI实时解析.agent/源数据，无需同步产物目录，每次运行都是最新状态",
     "人类交互入口是./cli（Bun+TypeScript构建），源码在.agent/cli-src/",

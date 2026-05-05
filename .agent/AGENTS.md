@@ -42,13 +42,13 @@
 ## 2. 项目结构
 
 ```
-project-root/           ← 人类的家（极度简洁）
+project-root/           ← 本仓库根目录（人类可见区，极度简洁）
 ├── README.md           ← 人类唯一文档
 ├── AGENTS.md           ← Agent 极简入口
 ├── cli                 ← 人类状态查看器（不是 Agent）
 └── config/             ← 人类配置区
 
-.agent/                 ← Agent 的完整世界（隐藏）
+.agent/                 ← Agent 的完整世界（隐藏，人类不应直接操作）
   ├── AGENTS.md         ← 本文件（完整规范）
   ├── memory/           ← 结构化记忆
   ├── plans/            ← 螺丝计划
@@ -76,9 +76,24 @@ project-root/           ← 人类的家（极度简洁）
 
 ---
 
-## 4. 六大核心区域
+## 4. 路径约定（防歧义）
 
-### 4.1 Commands
+> **"项目根目录" = 本 Git 仓库的根目录**，不是系统用户家目录 `~/`。
+
+| 术语 | 含义 | 示例路径 |
+|------|------|---------|
+| 项目根目录 | 本仓库根目录（`repositoryDestinationOfGithub/program-agent-nanoclaw/`）| `.agent/knowledge/` |
+| 系统家目录 | 用户系统家目录（`~/`）| `/Users/wedaren/` |
+| Agent 空间 | `.agent/` 下的所有内容 | `.agent/memory/` |
+| 人类空间 | 项目根目录下除 `.agent/` 外的内容 | `README.md`, `src/` |
+
+**Agent 必须遵守：** 当人类说"存到我家""放到根目录""整理到项目里"时，一律指向**项目根目录**或其子目录，绝不要写入系统家目录 `~/`。
+
+---
+
+## 5. 六大核心区域
+
+### 5.1 Commands
 
 ```bash
 # Agent 工具
@@ -90,28 +105,28 @@ python .agent/tools/agent_sync.py    # 同步脚本（如需要）
 ./cli help              # 帮助
 ```
 
-### 4.2 Testing
+### 5.2 Testing
 
 - 框架：`pytest`
 - 位置：按需创建 `tests/`
 
-### 4.3 Code Style
+### 5.3 Code Style
 
 - Python: PEP 8, 类型注解, Google docstring
 - TypeScript: strict mode
 - 最大行宽: 100
 
-### 4.4 Git Workflow
+### 5.4 Git Workflow
 
 - 分支: `feature/description`, `agent/memory-update`
 - Commit: `type(scope): subject`
 - 禁止直接提交 main
 
-### 4.5 Project Structure
+### 5.5 Project Structure
 
 见上方结构图。
 
-### 4.6 Boundaries（红线）
+### 5.6 Boundaries（红线）
 
 Agent **绝对禁止**：
 - ❌ 修改根目录 `cli`（人类状态查看器）
@@ -122,7 +137,7 @@ Agent **绝对禁止**：
 
 ---
 
-## 5. 记忆与计划
+## 6. 记忆与计划
 
 ### 核心记忆
 `.agent/memory/project-context.json` — 每次会话必读。
@@ -132,7 +147,7 @@ Agent **绝对禁止**：
 
 ---
 
-## 6. 与人类协作
+## 7. 与人类协作
 
 ### Agent 的行为准则
 
@@ -150,7 +165,7 @@ Agent **绝对禁止**：
 
 ---
 
-## 7. CLI 扩展
+## 8. CLI 扩展
 
 CLI 源码位于 `.agent/cli-src/`，Agent 负责维护。
 
@@ -159,4 +174,4 @@ Agent：创建 `.agent/cli-src/src/commands/report.ts`，注册，构建。
 
 ---
 
-*本文件由 Agent 维护。最后更新：2026-05-04*
+*本文件由 Agent 维护。最后更新：2026-05-05*
