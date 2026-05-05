@@ -123,7 +123,7 @@ ls src/        # Agent 交付的代码
 
 **配置位置**：
 - 项目级（推荐）：`config/mcp.json` — 已配置，版本控制
-- 全局（可选）：运行 `./install-mcp.sh`
+- 全局（可选）：运行 `.agent/tools/install-mcp.sh`
 
 ---
 
@@ -148,7 +148,7 @@ source completions/setup.zsh
 
 **永久安装（可选）**
 ```bash
-./setup-completions.sh
+completions/setup.sh
 ```
 
 ---

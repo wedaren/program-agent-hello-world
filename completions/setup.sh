@@ -1,5 +1,5 @@
 #!/bin/bash
-# setup-completions.sh — 安装 zsh/bash 补全（可选，持久化）
+# completions/setup.sh — 安装 zsh/bash 补全（可选，持久化）
 #
 # 设计：只安装一次 _cli 函数到 ~/.zsh/completions/
 # _cli 是动态的，每次按 tab 都会调用当前目录的 ./cli --completions
@@ -30,7 +30,7 @@ if [ "$current_shell" == "zsh" ] || [ "$1" == "--zsh" ]; then
   fi
   
   mkdir -p "$TARGET_DIR"
-  cp "$SCRIPT_DIR/completions/_cli" "$TARGET_DIR/"
+  cp "$SCRIPT_DIR/_cli" "$TARGET_DIR/"
   
   echo "✅ zsh 补全已安装到 $TARGET_DIR/_cli"
   echo ""

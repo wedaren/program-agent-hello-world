@@ -1,15 +1,15 @@
 #!/bin/bash
-# install-mcp.sh — 将项目 MCP 配置安装到全局
+# .agent/tools/install-mcp.sh — 将项目 MCP 配置安装到全局
 #
 # 用法:
-#   ./install-mcp.sh              # 安装到 Claude Code 全局配置
-#   ./install-mcp.sh --cursor     # 安装到 Cursor 全局配置
-#   ./install-mcp.sh --check      # 检查 Chrome 是否就绪
+#   .agent/tools/install-mcp.sh              # 安装到 Claude Code 全局配置
+#   .agent/tools/install-mcp.sh --cursor     # 安装到 Cursor 全局配置
+#   .agent/tools/install-mcp.sh --check      # 检查 Chrome 是否就绪
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-MCP_CONFIG="$SCRIPT_DIR/config/mcp.json"
+MCP_CONFIG="$SCRIPT_DIR/../../config/mcp.json"
 
 function check_chrome() {
   echo "🔍 检查 Chrome 远程调试..."
@@ -78,8 +78,8 @@ case "${1:-}" in
     install_claude
     echo ""
     echo "其他 Agent："
-    echo "  ./install-mcp.sh --cursor    # Cursor"
-    echo "  ./install-mcp.sh --check     # 只检查 Chrome"
+    echo "  .agent/tools/install-mcp.sh --cursor    # Cursor"
+    echo "  .agent/tools/install-mcp.sh --check     # 只检查 Chrome"
     ;;
 esac
 
