@@ -24,6 +24,12 @@ export function run(): void {
   console.log(`  ${pc.green('./cli browser')}       浏览器仪表板`);
   console.log('');
   
+  console.log(pc.bold('🌐 Chrome DevTools MCP'));
+  console.log(`  ${pc.green('./cli chrome start')}   启动 Chrome（远程调试）`);
+  console.log(`  ${pc.green('./cli chrome stop')}    停止 Chrome`);
+  console.log(`  ${pc.green('./cli chrome status')}  检查 Chrome 状态`);
+  console.log('');
+  
   console.log(pc.bold('👁️ 实时监控'));
   console.log(`  ${pc.green('./cli watch')}         每30秒自动刷新`);
   console.log(`  ${pc.green('./cli watch --interval 10')}  每10秒刷新`);

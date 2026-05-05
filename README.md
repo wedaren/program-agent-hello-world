@@ -93,10 +93,37 @@ ls src/        # Agent 交付的代码
 
 ## ⚙️ 配置
 
+### Agent 偏好
 ```bash
 # 告诉 Agent 你的偏好
 "帮我在 config/ 建一个配置，我用中文，喜欢严格类型注解"
 ```
+
+### MCP（Agent 工具集成）
+
+本项目已配置 **Chrome DevTools MCP**，Agent 可以控制浏览器进行调试、截图、性能分析。
+
+```bash
+# 1. 一键启动 Chrome（远程调试模式）
+./cli chrome start
+
+# 2. Agent 自动读取 config/mcp.json 连接 Chrome
+
+# 3. 对 Agent 说：
+# "打开 http://localhost:3000 截图看看"
+# "分析一下页面性能"
+```
+
+**Chrome 管理**：
+```bash
+./cli chrome start    # 启动 Chrome（远程调试）
+./cli chrome stop     # 停止 Chrome
+./cli chrome status   # 检查状态
+```
+
+**配置位置**：
+- 项目级（推荐）：`config/mcp.json` — 已配置，版本控制
+- 全局（可选）：运行 `./install-mcp.sh`
 
 ---
 

@@ -71,8 +71,9 @@ project-root/           ← 人类的家（极度简洁）
 1. **优先读取本文件**（`.agent/AGENTS.md`）
 2. **加载核心记忆**（`.agent/memory/project-context.json`）
 3. **查看活跃计划**（`.agent/plans/active/`）
-4. **遵守红线**（见下方 Boundaries）
-5. **工作完成后汇报人类**，人类通过 `./cli` 查看状态
+4. **读取 MCP 配置**（`config/mcp.json`）— 如有 Chrome DevTools 等工具，自动连接
+5. **遵守红线**（见下方 Boundaries）
+6. **工作完成后汇报人类**，人类通过 `./cli` 查看状态
 
 ---
 
@@ -88,6 +89,9 @@ python .agent/tools/agent_sync.py    # 同步脚本（如需要）
 ./cli status            # 人类查看状态
 ./cli context           # 生成项目上下文，人类复制给 Agent
 ./cli help              # 帮助
+
+# MCP（Agent 自动读取）
+config/mcp.json         # 项目级 MCP 配置
 ```
 
 ### 4.2 Testing

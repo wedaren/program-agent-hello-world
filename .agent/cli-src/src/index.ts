@@ -19,6 +19,7 @@ const commands: Record<string, () => void> = {
   summary: () => require('./commands/summary').run(),
   browser: () => require('./commands/browser').run(),
   context: () => require('./commands/context').run(),
+  chrome: () => require('./commands/chrome').run(),
   help: () => require('./commands/help').run(),
   '-h': () => require('./commands/help').run(),
   '--help': () => require('./commands/help').run(),
@@ -35,6 +36,11 @@ function main(): void {
   
   if (command === 'watch') {
     require('./commands/watch').run(args.slice(1));
+    return;
+  }
+  
+  if (command === 'chrome') {
+    require('./commands/chrome').run(args.slice(1));
     return;
   }
   
