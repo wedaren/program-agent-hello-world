@@ -147,8 +147,12 @@ function startChrome(flags: { headless?: boolean; background?: boolean } = {}): 
     `--remote-debugging-port=${port}`,
     '--no-first-run',
     '--no-default-browser-check',
-    '--new-window',
   ];
+
+  // 前台模式才需要 new-window，后台/无头模式不需要
+  if (!isBackground && !isHeadless) {
+    args.push('--new-window');
+  }
 
   if (cfg.chrome.isolated) {
     const tmpDir = `/tmp/chrome-isolated-${Date.now()}`;
@@ -163,8 +167,9 @@ function startChrome(flags: { headless?: boolean; background?: boolean } = {}): 
     args.push('--headless=new');
     console.log(pc.dim('   模式: 无头（完全后台运行）'));
   } else if (isBackground) {
+    // macOS: 窗口移出屏幕 + 启动后隐藏进程
     args.push('--window-position=99999,99999');
-    console.log(pc.dim('   模式: 后台（窗口在屏幕外，不打扰）'));
+    console.log(pc.dim('   模式: 后台（窗口隐藏，不抢占焦点）'));
   } else {
     console.log(pc.dim('   模式: 前台（正常窗口）'));
   }
@@ -187,12 +192,27 @@ function startChrome(flags: { headless?: boolean; background?: boolean } = {}): 
   console.log(pc.dim(`   视口: ${cfg.chrome.viewport}`));
   console.log('');
 
-  const chrome = spawn(CHROME_PATH, args, {
-    detached: true,
-    stdio: 'ignore',
-  });
-
-  chrome.unref();
+  if (isBackground) {
+    // macOS: 使用 open -gj 启动 Chrome，不激活、不显示窗口
+    // -g: 不将应用带到前台
+    // -j: 隐藏应用
+    const open = spawn('open', [
+      '-gj',
+      '-a', 'Google Chrome',
+      '--args',
+      ...args,
+    ], {
+      detached: true,
+      stdio: 'ignore',
+    });
+    open.unref();
+  } else {
+    const chrome = spawn(CHROME_PATH, args, {
+      detached: true,
+      stdio: 'ignore',
+    });
+    chrome.unref();
+  }
 
   // 等待启动
   let attempts = 0;
