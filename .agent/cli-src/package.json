@@ -11,11 +11,13 @@
     "install-cli": "bun run build && bun link"
   },
   "dependencies": {
+    "js-yaml": "^4.1.1",
     "picocolors": "^1.0.1"
   },
   "devDependencies": {
-    "typescript": "^5.4.0",
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/js-yaml": "^4.0.9",
+    "typescript": "^5.4.0"
   },
   "engines": {
     "bun": ">=1.0.0"

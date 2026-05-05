@@ -1,20 +1,126 @@
 /**
  * cli chrome — Chrome 远程调试管理
- * 
+ *
  * 一键启动/停止 Chrome DevTools 远程调试模式，
  * 配合 config/mcp.json 中的 Chrome DevTools MCP 使用。
+ *
+ * 配置来源: config/chrome.yaml
  */
 
 import { spawn, execSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
 import pc from 'picocolors';
+import yaml from 'js-yaml';
+
+// ─── 配置加载 ──────────────────────────────────────────────
+
+interface ChromeConfig {
+  chrome: {
+    data_dir: string;
+    remote_debugging_port: number;
+    headless: boolean;
+    viewport: string;
+    isolated: boolean;
+    extra_args: string[];
+  };
+  xiaohongshu: {
+    creator_center: string;
+    search_url: string;
+    default_tags: string[];
+  };
+}
+
+function findProjectRoot(): string {
+  let dir = process.cwd();
+  // 如果从 .agent/cli-src 内部运行（开发时）
+  if (dir.includes('.agent/cli-src')) {
+    dir = path.resolve(dir, '../../../');
+  }
+  return dir;
+}
+
+const PROJECT_ROOT = findProjectRoot();
+const CONFIG_PATH = path.join(PROJECT_ROOT, 'config', 'chrome.yaml');
+const MCP_CONFIG_PATH = path.join(PROJECT_ROOT, 'config', 'mcp.json');
+
+function loadConfig(): ChromeConfig {
+  const defaults: ChromeConfig = {
+    chrome: {
+      data_dir: '.agent/chrome-profile',
+      remote_debugging_port: 9222,
+      headless: false,
+      viewport: '1280x720',
+      isolated: false,
+      extra_args: [],
+    },
+    xiaohongshu: {
+      creator_center: 'https://creator.xiaohongshu.com',
+      search_url: 'https://www.xiaohongshu.com/search_result',
+      default_tags: ['职场', '成长', '干货'],
+    },
+  };
+
+  if (!fs.existsSync(CONFIG_PATH)) {
+    console.log(pc.yellow('⚠️  config/chrome.yaml 不存在，使用默认配置'));
+    return defaults;
+  }
+
+  try {
+    const raw = fs.readFileSync(CONFIG_PATH, 'utf-8');
+    const parsed = yaml.load(raw) as Partial<ChromeConfig>;
+    return {
+      chrome: { ...defaults.chrome, ...parsed.chrome },
+      xiaohongshu: { ...defaults.xiaohongshu, ...parsed.xiaohongshu },
+    };
+  } catch (err) {
+    console.log(pc.yellow(`⚠️  解析 config/chrome.yaml 失败: ${err}`));
+    return defaults;
+  }
+}
+
+function resolveDataDir(cfg: ChromeConfig): string {
+  const dir = cfg.chrome.data_dir;
+  if (path.isAbsolute(dir)) return dir;
+  return path.join(PROJECT_ROOT, dir);
+}
+
+// ─── MCP 配置校验 ──────────────────────────────────────────
+
+function checkMcpConfig(port: number): void {
+  if (!fs.existsSync(MCP_CONFIG_PATH)) return;
+
+  try {
+    const raw = fs.readFileSync(MCP_CONFIG_PATH, 'utf-8');
+    const mcp = JSON.parse(raw);
+    const chromeMcp = mcp.mcpServers?.['chrome-devtools'];
+    if (!chromeMcp) return;
+
+    const args = chromeMcp.args || [];
+    const browserUrlIdx = args.indexOf('--browser-url');
+    if (browserUrlIdx === -1 || browserUrlIdx + 1 >= args.length) return;
+
+    const url = args[browserUrlIdx + 1];
+    const expected = `http://127.0.0.1:${port}`;
+
+    if (!url.includes(`:${port}`)) {
+      console.log(pc.yellow('⚠️  config/mcp.json 中的 --browser-url 端口与 config/chrome.yaml 不一致'));
+      console.log(pc.dim(`   MCP 配置: ${url}`));
+      console.log(pc.dim(`   Chrome 配置: ${expected}`));
+      console.log(pc.dim('   请同步两者端口，或重新运行 ./cli chrome start'));
+    }
+  } catch {
+    // 忽略 MCP 配置解析错误
+  }
+}
+
+// ─── Chrome 生命周期 ───────────────────────────────────────
 
 const CHROME_PATH = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-const DEBUG_PORT = 9222;
-const USER_DATA_DIR = '/tmp/chrome-dev-profile';
 
-function isChromeRunning(): boolean {
+function isChromeRunning(port: number): boolean {
   try {
-    execSync(`curl -s http://127.0.0.1:${DEBUG_PORT}/json > /dev/null 2>&1`);
+    execSync(`curl -s http://127.0.0.1:${port}/json > /dev/null 2>&1`);
     return true;
   } catch {
     return false;
@@ -22,25 +128,57 @@ function isChromeRunning(): boolean {
 }
 
 function startChrome(): void {
-  if (isChromeRunning()) {
+  const cfg = loadConfig();
+  const port = cfg.chrome.remote_debugging_port;
+  const dataDir = resolveDataDir(cfg);
+
+  if (isChromeRunning(port)) {
     console.log(pc.yellow('⚠️  Chrome 远程调试已在运行'));
-    console.log(pc.dim(`   http://127.0.0.1:${DEBUG_PORT}`));
+    console.log(pc.dim(`   http://127.0.0.1:${port}`));
     return;
   }
 
-  console.log(pc.cyan('🚀 启动 Chrome（远程调试模式）...'));
-  console.log(pc.dim(`   端口: ${DEBUG_PORT}`));
-  console.log(pc.dim(`   数据目录: ${USER_DATA_DIR}`));
-  console.log('');
+  checkMcpConfig(port);
 
-  const chrome = spawn(CHROME_PATH, [
-    `--remote-debugging-port=${DEBUG_PORT}`,
-    `--user-data-dir=${USER_DATA_DIR}`,
+  const args: string[] = [
+    `--remote-debugging-port=${port}`,
     '--no-first-run',
     '--no-default-browser-check',
     '--new-window',
-    'about:blank',
-  ], {
+  ];
+
+  if (cfg.chrome.isolated) {
+    const tmpDir = `/tmp/chrome-isolated-${Date.now()}`;
+    args.push(`--user-data-dir=${tmpDir}`);
+    console.log(pc.cyan('🚀 启动 Chrome（独立模式，退出后清理数据）...'));
+  } else {
+    args.push(`--user-data-dir=${dataDir}`);
+    console.log(pc.cyan('🚀 启动 Chrome（持久化模式）...'));
+  }
+
+  if (cfg.chrome.headless) {
+    args.push('--headless=new');
+  }
+
+  // 视口大小通过 window-size 设置
+  const [width, height] = cfg.chrome.viewport.split('x');
+  if (width && height) {
+    args.push(`--window-size=${width},${height}`);
+  }
+
+  // 额外参数
+  if (cfg.chrome.extra_args?.length) {
+    args.push(...cfg.chrome.extra_args);
+  }
+
+  args.push('about:blank');
+
+  console.log(pc.dim(`   端口: ${port}`));
+  console.log(pc.dim(`   数据目录: ${cfg.chrome.isolated ? '/tmp/...' : dataDir}`));
+  console.log(pc.dim(`   视口: ${cfg.chrome.viewport}`));
+  console.log('');
+
+  const chrome = spawn(CHROME_PATH, args, {
     detached: true,
     stdio: 'ignore',
   });
@@ -51,10 +189,10 @@ function startChrome(): void {
   let attempts = 0;
   const checkInterval = setInterval(() => {
     attempts++;
-    if (isChromeRunning()) {
+    if (isChromeRunning(port)) {
       clearInterval(checkInterval);
       console.log(pc.green('✅ Chrome 已启动'));
-      console.log(pc.dim(`   调试地址: http://127.0.0.1:${DEBUG_PORT}`));
+      console.log(pc.dim(`   调试地址: http://127.0.0.1:${port}`));
       console.log(pc.dim('   Agent 现在可以通过 MCP 控制浏览器'));
       console.log('');
       console.log('💡 提示:');
@@ -68,15 +206,18 @@ function startChrome(): void {
 }
 
 function stopChrome(): void {
-  if (!isChromeRunning()) {
+  const cfg = loadConfig();
+  const port = cfg.chrome.remote_debugging_port;
+
+  if (!isChromeRunning(port)) {
     console.log(pc.yellow('⚠️  Chrome 远程调试未运行'));
     return;
   }
 
   console.log(pc.cyan('🛑 停止 Chrome...'));
-  
+
   try {
-    execSync(`pkill -f "remote-debugging-port=${DEBUG_PORT}"`);
+    execSync(`pkill -f "remote-debugging-port=${port}"`);
     console.log(pc.green('✅ Chrome 已停止'));
   } catch {
     console.log(pc.red('❌ 停止失败，请手动关闭'));
@@ -84,9 +225,14 @@ function stopChrome(): void {
 }
 
 function statusChrome(): void {
-  if (isChromeRunning()) {
+  const cfg = loadConfig();
+  const port = cfg.chrome.remote_debugging_port;
+  const dataDir = resolveDataDir(cfg);
+
+  if (isChromeRunning(port)) {
     console.log(pc.green('✅ Chrome 远程调试运行中'));
-    console.log(pc.dim(`   地址: http://127.0.0.1:${DEBUG_PORT}`));
+    console.log(pc.dim(`   地址: http://127.0.0.1:${port}`));
+    console.log(pc.dim(`   数据目录: ${dataDir}`));
     console.log(pc.dim('   Agent 可以通过 MCP 控制浏览器'));
   } else {
     console.log(pc.yellow('⏹️  Chrome 远程调试未运行'));

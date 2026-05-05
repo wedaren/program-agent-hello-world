@@ -1,0 +1,38 @@
+# Chrome 配置
+# CLI 启动 Chrome 时读取此文件
+# 修改后重新运行 ./cli chrome start 生效
+
+chrome:
+  # Profile 目录（相对于项目根目录或绝对路径）
+  data_dir: ".agent/chrome-profile"
+  
+  # 远程调试端口（需与 config/mcp.json 中的 --browser-url 一致）
+  remote_debugging_port: 9222
+  
+  # 是否无头模式（后台运行，不显示窗口）
+  headless: false
+  
+  # 视口大小
+  viewport: "1280x720"
+  
+  # 是否使用独立 profile（每次启动清理数据）
+  isolated: false
+  
+  # 额外的 Chrome 启动参数
+  extra_args: []
+    # - "--proxy-server=http://localhost:7890"
+    # - "--disable-extensions"
+
+# 小红书相关配置
+xiaohongshu:
+  # 创作者中心地址
+  creator_center: "https://creator.xiaohongshu.com"
+  
+  # 搜索页面
+  search_url: "https://www.xiaohongshu.com/search_result"
+  
+  # 常用标签（Agent 发布时参考）
+  default_tags:
+    - "职场"
+    - "成长"
+    - "干货"
