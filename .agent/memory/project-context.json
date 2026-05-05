@@ -16,7 +16,8 @@
     "config/是人类的专属配置区，初始为空",
     "Agent记忆使用结构化JSON，存储于 .agent/memory/",
     "螺丝计划使用Markdown+Frontmatter，存储于 .agent/plans/",
-    "CLI可扩展：用户提需求，Agent在.agent/cli-src/实现新子命令"
+    "CLI可扩展：用户提需求，Agent在.agent/cli-src/实现新子命令",
+    "已收集NanoClaw项目资料，存储于 .agent/knowledge/nanoclaw-overview.md"
   ],
   "preferences": {
     "primary_language": "zh",
