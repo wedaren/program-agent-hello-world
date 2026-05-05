@@ -35,8 +35,20 @@ function main(): void {
   }
   
   if (command === '--completions') {
-    const allCommands = Object.keys(commands).filter(c => !c.startsWith('-') && c !== '--completions');
-    console.log(allCommands.join(' '));
+    const parent = args[1] || ''; // 当前输入的父命令（如 chrome）
+    
+    // 二级命令补全
+    if (parent === 'chrome') {
+      console.log('start stop status');
+    } else if (parent === 'watch') {
+      console.log('--interval');
+    } else {
+      // 一级命令
+      const allCommands = Object.keys(commands).filter(
+        c => !c.startsWith('-') && c !== '--completions'
+      );
+      console.log(allCommands.join(' '));
+    }
     process.exit(0);
   }
   

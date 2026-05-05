@@ -2,19 +2,20 @@
 
 # zsh 补全函数 for Human-Agent Coexistence CLI
 # 
-# 设计原则：只安装一次，但补全内容动态获取。
-# 每次按 tab 时，检测当前目录是否有 ./cli，有则调用它获取该项目的命令列表。
-# 这样多个项目不会冲突，每个项目显示自己的命令。
+# 设计：只安装一次，补全内容动态获取。
+# 每次按 tab，检测当前目录的 ./cli，调用它获取当前项目的命令。
+# 多项目不冲突，二级命令自动同步。
 
 _cli() {
   local -a cmds
+  local parent="${words[2]}"  # 当前已输入的第一个参数（如 chrome）
   
-  # 如果当前目录有 ./cli，动态获取该项目的命令
+  # 动态获取：传递父命令给 ./cli --completions，获取子命令
   if [[ -x ./cli ]]; then
-    cmds=(${(s: :)$(./cli --completions 2>/dev/null)})
+    cmds=(${(s: :)$(./cli --completions "$parent" 2>/dev/null)})
   fi
   
-  # 回退：如果获取失败，使用默认命令
+  # 回退
   if [[ ${#cmds} -eq 0 ]]; then
     cmds=(status plans decisions summary browser context chrome watch help)
   fi
