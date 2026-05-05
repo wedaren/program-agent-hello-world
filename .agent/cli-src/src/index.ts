@@ -34,6 +34,12 @@ function main(): void {
     process.exit(0);
   }
   
+  if (command === '--completions') {
+    const allCommands = Object.keys(commands).filter(c => !c.startsWith('-') && c !== '--completions');
+    console.log(allCommands.join(' '));
+    process.exit(0);
+  }
+  
   if (command === 'watch') {
     require('./commands/watch').run(args.slice(1));
     return;
