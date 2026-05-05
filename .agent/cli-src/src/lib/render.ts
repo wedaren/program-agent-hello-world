@@ -182,9 +182,10 @@ export function renderDashboard(data: DashboardData): string {
   const lines: string[] = [];
   
   // 标题
+  const projectName = data.displayName || '未命名项目';
   lines.push('');
-  lines.push(pc.cyan(pc.bold(' '.repeat(20) + '🤖⧉👤 人与 Agent 共存项目')));
-  lines.push(pc.dim(' '.repeat(18) + 'Agent 维护细节 · 人类掌控方向'));
+  lines.push(pc.cyan(pc.bold(' '.repeat(12) + `🤖⧉👤 ${projectName}`)));
+  lines.push(pc.dim(' '.repeat(10) + 'Agent 维护细节 · 人类掌控方向'));
   lines.push('');
   
   // 通知

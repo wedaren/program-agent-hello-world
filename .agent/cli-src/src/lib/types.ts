@@ -41,6 +41,7 @@ export interface Notification {
 
 export interface DashboardData {
   lastSync: string;
+  displayName: string;
   projectSummary: string;
   metrics: Metrics;
   activePlans: Plan[];

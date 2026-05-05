@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "entity_id": "program-agent-hello-world",
   "entity_type": "project",
-  "summary": "小红书分支实践。基于人与Agent共存框架，在小红书场景下实践：内容策划、发布计划、数据分析、互动管理。人类定方向，Agent执行细节。",
+  "display_name": "小红书运营",
+  "summary": "小红书运营项目。基于人与Agent共存框架，在小红书场景下实践内容策划、发布计划、数据分析、互动管理。人类定方向，Agent执行细节。",
   "key_facts": [
     "当前分支：xiaohongshu（小红书实践）",
     "基于 human-agent coexistence 框架",

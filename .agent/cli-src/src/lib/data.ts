@@ -151,6 +151,7 @@ export function loadData(root: string): DashboardData {
   
   return {
     lastSync: context.last_updated || new Date().toISOString(),
+    displayName: context.display_name || '未命名项目',
     projectSummary: context.summary || '暂无项目摘要',
     metrics: {
       activePlans: activePlans.length,

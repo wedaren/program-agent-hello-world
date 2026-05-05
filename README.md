@@ -161,6 +161,20 @@ source completions/setup.zsh
 - **按需创建** — `src/`, `docs/`, `tests/` 不预设
 - **Agent 是外部工具** — 本项目只是它的工作空间
 
+## 🏘️ 多项目管理
+
+每个项目都有自己的 `./cli`，**不会混乱**。
+
+```bash
+~/project-a$ ./cli status   # 看 project-a 的状态
+~/project-b$ ./cli status   # 看 project-b 的状态
+```
+
+**为什么不会混乱**：
+- `./cli` 就是项目本地工具，类比 `npm run`、`make`
+- CLI 顶部始终显示**当前项目名称**（从 `.agent/memory/project-context.json` 读取 `display_name`）
+- 不同项目的 `display_name` 不同，一眼识别
+
 ---
 
 *本项目是房子，Agent 是住进来的人，你掌控方向。*
