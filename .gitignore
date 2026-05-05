@@ -6,6 +6,15 @@ node_modules/
 .agent/cli-src/dist/
 cli  # Compiled binary, build locally with ./agent/cli-src/bun run build
 
+# Chrome profile (contains cookies, login sessions)
+.agent/chrome-profile/
+
+# Generated knowledge data
+.agent/knowledge/
+
+# Node modules at root (if any)
+node_modules/
+
 # Lock files
 *.lockb
 package-lock.json
