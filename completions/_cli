@@ -1,0 +1,41 @@
+#compdef cli
+
+# zsh 补全函数 for Human-Agent Coexistence CLI
+# 使用方式：
+#   source completions/setup.zsh          # 当前 shell 临时启用
+#   ./setup-completions.sh                 # 永久安装到 ~/.zsh/completions/
+
+local -a commands
+commands=(
+  'status:完整仪表板'
+  'plans:计划进度'
+  'decisions:决策记录'
+  'summary:项目摘要'
+  'browser:浏览器仪表板'
+  'context:生成项目上下文（复制给 Agent）'
+  'chrome:Chrome 远程调试管理'
+  'watch:实时监控'
+  'help:显示帮助'
+  '--version:显示版本'
+)
+
+# chrome 子命令
+if [[ "$words[2]" == "chrome" ]]; then
+  local -a chrome_commands
+  chrome_commands=(
+    'start:启动 Chrome（远程调试）'
+    'stop:停止 Chrome'
+    'status:检查 Chrome 状态'
+  )
+  _describe 'chrome command' chrome_commands
+  return
+fi
+
+# watch 选项
+if [[ "$words[2]" == "watch" ]]; then
+  _arguments \
+    '--interval[刷新间隔（秒）]:interval:'
+  return
+fi
+
+_describe 'command' commands

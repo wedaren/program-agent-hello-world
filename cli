@@ -4,6 +4,11 @@
 # 无需安装到系统，在项目目录下直接运行即可。
 # 首次使用自动构建，无需手动操作。
 #
+# 补全支持：
+#   zsh: source completions/setup.zsh（当前 shell）
+#        ./setup-completions.sh（永久安装）
+#   bash: ./setup-completions.sh --bash
+#
 # 用法:
 #   ./cli status
 #   ./cli plans
@@ -12,6 +17,12 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HAC_BIN="$SCRIPT_DIR/.agent/cli-src/dist/cli"
 CLI_DIR="$SCRIPT_DIR/.agent/cli-src"
+
+# 补全模式检测（bash）
+if [[ -n "$COMP_LINE" ]]; then
+  echo "status plans decisions summary browser context chrome watch help --version"
+  exit 0
+fi
 
 # 首次使用：自动构建
 if [ ! -f "$HAC_BIN" ]; then

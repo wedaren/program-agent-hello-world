@@ -136,6 +136,21 @@ ls src/        # Agent 交付的代码
 
 Agent 在 `.agent/cli-src/` 实现，你立即用 `./cli report`。
 
+## ⌨️ Tab 补全
+
+**zsh（推荐，零侵入）**
+```bash
+source completions/setup.zsh
+# 然后按 tab：
+# ./cli <tab>          → status plans decisions ...
+# ./cli chrome <tab>   → start stop status
+```
+
+**永久安装（可选）**
+```bash
+./setup-completions.sh
+```
+
 ---
 
 ## 📌 原则
